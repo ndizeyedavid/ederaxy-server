@@ -6,76 +6,548 @@
   },
   "item": [
     {
-      "name": "Signup",
-      "id": "b5861f52-2962-44b6-ad3f-57af34161eac",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n    \"fullName\": \"Peter JOhnson\",\r\n    \"dob\": \"2025-12-12\",\r\n    \"nationalId\": \"123456789012\",\r\n    \"bio\": \"In love with physics\",\r\n    \"email\": \"peter@gmail.com\",\r\n    \"password\": \"mellow@123\",\r\n    \"role\": \"student\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+      "name": "Curriculums",
+      "item": [
+        {
+          "name": "Create Curriculum",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rwanda National Curriculum\",\n  \"description\": \"The official curriculum for schools in Rwanda\",\n  \"country\": \"Rwanda\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/curriculums",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "curriculums"]
             }
           }
         },
-        "url": {
-          "raw": "{{baseURL}}/api/v1/auth/register",
-          "host": [
-            "{{baseURL}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "auth",
-            "register"
-          ]
+        {
+          "name": "List Curriculums",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/curriculums?includeHierarchy=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "curriculums"],
+              "query": [
+                {
+                  "key": "includeHierarchy",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Curriculum",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/curriculums/{{curriculumId}}?includeHierarchy=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "curriculums", "{{curriculumId}}"],
+              "query": [
+                {
+                  "key": "includeHierarchy",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Curriculum",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Rwanda National Curriculum\",\n  \"description\": \"Updated curriculum description\"\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/curriculums/{{curriculumId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "curriculums", "{{curriculumId}}"]
+            }
+          }
         }
-      },
-      "response": []
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "id": "bcb12a31-c429-4c98-a86c-98c3e8e31ac0",
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
+      ]
     },
     {
-      "listen": "test",
-      "script": {
-        "id": "ebad5d1b-5a12-4c0f-9b5e-d6566e3b3bcd",
-        "type": "text/javascript",
-        "packages": {},
-        "requests": {},
-        "exec": [
-          ""
-        ]
-      }
+      "name": "Academic Levels",
+      "item": [
+        {
+          "name": "Create Academic Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lower Primary\",\n  \"description\": \"Lower primary level (P1-P3)\",\n  \"stage\": \"lower_primary\",\n  \"curriculumId\": \"{{curriculumId}}\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-levels",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-levels"]
+            }
+          }
+        },
+        {
+          "name": "List Academic Levels",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-levels?curriculumId={{curriculumId}}&includeClasses=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-levels"],
+              "query": [
+                {
+                  "key": "curriculumId",
+                  "value": "{{curriculumId}}"
+                },
+                {
+                  "key": "includeClasses",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Academic Level",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-levels/{{levelId}}?includeClasses=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-levels", "{{levelId}}"],
+              "query": [
+                {
+                  "key": "includeClasses",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Academic Level",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description for lower primary level\",\n  \"order\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-levels/{{levelId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-levels", "{{levelId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Academic Classes",
+      "item": [
+        {
+          "name": "Create Academic Class",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"P1\",\n  \"code\": \"P1\",\n  \"description\": \"Primary one\",\n  \"levelId\": \"{{levelId}}\",\n  \"order\": 1,\n  \"combinationIds\": [\n    \"{{combinationId}}\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-classes",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-classes"]
+            }
+          }
+        },
+        {
+          "name": "List Academic Classes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-classes?levelId={{levelId}}&includeCombinations=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-classes"],
+              "query": [
+                {
+                  "key": "levelId",
+                  "value": "{{levelId}}"
+                },
+                {
+                  "key": "includeCombinations",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Academic Class",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-classes/{{classId}}?includeCombinations=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-classes", "{{classId}}"],
+              "query": [
+                {
+                  "key": "includeCombinations",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Academic Class",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated description for class P1\",\n  \"order\": 2,\n  \"combinationIds\": [\n    \"{{combinationId}}\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/academic-classes/{{classId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "academic-classes", "{{classId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Class Combinations",
+      "item": [
+        {
+          "name": "Create Class Combination",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Physics, Chemistry, Mathematics\",\n  \"code\": \"PCM\",\n  \"description\": \"Science combination\",\n  \"type\": \"science\",\n  \"subjects\": [\n    \"{{subjectId}}\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/class-combinations",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "class-combinations"]
+            }
+          }
+        },
+        {
+          "name": "List Class Combinations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/class-combinations?type=science&includeSubjects=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "class-combinations"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "science"
+                },
+                {
+                  "key": "includeSubjects",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Class Combination",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/class-combinations/{{combinationId}}?includeSubjects=true",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "class-combinations", "{{combinationId}}"],
+              "query": [
+                {
+                  "key": "includeSubjects",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Class Combination",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated PCM combination\",\n  \"subjects\": [\n    \"{{subjectId}}\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/class-combinations/{{combinationId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "class-combinations", "{{combinationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subjects",
+      "item": [
+        {
+          "name": "Create Subject",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Mathematics\",\n  \"description\": \"Numeracy skills for lower primary\",\n  \"curriculumId\": \"{{curriculumId}}\",\n  \"targetLevelIds\": [\"{{levelId}}\"],\n  \"targetClassIds\": [\"{{classId}}\"],\n  \"targetCombinationIds\": [\"{{combinationId}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/subjects",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "subjects"]
+            }
+          }
+        },
+        {
+          "name": "List Subjects",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/subjects?curriculumId={{curriculumId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "subjects"],
+              "query": [
+                {
+                  "key": "curriculumId",
+                  "value": "{{curriculumId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Subject",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "subjects", "{{subjectId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Subject",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated subject description\",\n  \"targetLevelIds\": [\"{{levelId}}\"],\n  \"targetClassIds\": [\"{{classId}}\"],\n  \"targetCombinationIds\": [\"{{combinationId}}\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/subjects/{{subjectId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "subjects", "{{subjectId}}"]
+            }
+          }
+        }
+      ]
     }
   ],
   "variable": [
     {
-      "id": "1f6b2ed6-14db-4189-90e3-747ff54cca24",
       "key": "baseURL",
       "value": ""
     },
     {
-      "id": "2b0e22d7-d7c0-4296-a457-9b0bc9c982c9",
       "key": "AccessToken",
       "value": ""
     },
     {
-      "id": "4f0d27d6-5cdb-4f12-9dde-0fa5de0673f7",
       "key": "RefreshToken",
+      "value": ""
+    },
+    {
+      "key": "curriculumId",
+      "value": ""
+    },
+    {
+      "key": "levelId",
+      "value": ""
+    },
+    {
+      "key": "classId",
+      "value": ""
+    },
+    {
+      "key": "combinationId",
+      "value": ""
+    },
+    {
+      "key": "subjectId",
       "value": ""
     }
   ]
