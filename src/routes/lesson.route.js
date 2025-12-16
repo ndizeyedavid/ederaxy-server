@@ -19,7 +19,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listLessonSchema, "query"),
+  // validateRequest(listLessonSchema, "query"),
   list
 );
 
@@ -36,7 +36,7 @@ router.patch(
   authenticate,
   ensureTeacher,
   validateRequest(lessonIdParamSchema, "params"),
-  validateRequest(updateLessonSchema),
+  // validateRequest(updateLessonSchema),
   update
 );
 

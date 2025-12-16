@@ -107,6 +107,105 @@
       ]
     },
     {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Algebra Basics\",\n  \"description\": \"Core algebra concepts for senior students\",\n  \"subjectId\": \"{{subjectId}}\",\n  \"isPublished\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/courses",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "courses"]
+            }
+          }
+        },
+        {
+          "name": "List Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/courses?subjectId={{subjectId}}&teacherId={{teacherId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "courses"],
+              "query": [
+                {
+                  "key": "subjectId",
+                  "value": "{{subjectId}}"
+                },
+                {
+                  "key": "teacherId",
+                  "value": "{{teacherId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Course",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseURL}}/api/v1/courses/{{courseId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "courses", "{{courseId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{AccessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated algebra course description\",\n  \"isPublished\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseURL}}/api/v1/courses/{{courseId}}",
+              "host": ["{{baseURL}}"],
+              "path": ["api", "v1", "courses", "{{courseId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Academic Levels",
       "item": [
         {
@@ -540,6 +639,10 @@
     },
     {
       "key": "classId",
+      "value": ""
+    },
+    {
+      "key": "teacherId",
       "value": ""
     },
     {

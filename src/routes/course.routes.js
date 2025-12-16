@@ -24,7 +24,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listCourseSchema, "query"),
+  // validateRequest(listCourseSchema, "query"),
   list
 );
 

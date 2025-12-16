@@ -21,6 +21,7 @@ export const create = asyncHandler(async (req, res) => {
 export const list = asyncHandler(async (req, res) => {
   const filters = pick(req.query, ["subjectId", "teacherId"]);
   const courses = await listCourses(filters, req.user);
+  console.log(filters);
   return successResponse(res, { courses });
 });
 
