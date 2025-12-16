@@ -7,24 +7,25 @@ import {
 } from "../middleware/auth.middleware.js";
 import { ensureTeacher } from "../middleware/role.middleware.js";
 import {
-  createCourseSchema,
-  updateCourseSchema,
-  listCourseSchema,
-  courseIdParamSchema,
-} from "../validations/course.validation.js";
+  createCurriculumSchema,
+  updateCurriculumSchema,
+  curriculumIdParamSchema,
+  listCurriculumsQuerySchema,
+  curriculumDetailQuerySchema,
+} from "../validations/curriculum.validation.js";
 import {
   create,
   list,
   detail,
   update,
-} from "../controllers/course.controller.js";
+} from "../controllers/curriculum.controller.js";
 
 const router = Router();
 
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listCourseSchema, "query"),
+  validateRequest(listCurriculumsQuerySchema, "query"),
   list
 );
 
@@ -32,23 +33,24 @@ router.post(
   "/",
   authenticate,
   ensureTeacher,
-  validateRequest(createCourseSchema),
+  validateRequest(createCurriculumSchema),
   create
 );
 
 router.get(
-  "/:courseId",
+  "/:curriculumId",
   optionalAuthenticate,
-  validateRequest(courseIdParamSchema, "params"),
+  validateRequest(curriculumIdParamSchema, "params"),
+  validateRequest(curriculumDetailQuerySchema, "query"),
   detail
 );
 
 router.patch(
-  "/:courseId",
+  "/:curriculumId",
   authenticate,
   ensureTeacher,
-  validateRequest(courseIdParamSchema, "params"),
-  validateRequest(updateCourseSchema),
+  validateRequest(curriculumIdParamSchema, "params"),
+  validateRequest(updateCurriculumSchema),
   update
 );
 

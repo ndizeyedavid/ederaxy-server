@@ -11,7 +11,16 @@ export const pick = (obj, keys = []) =>
     return acc;
   }, {});
 
+export const slugify = (value) =>
+  value
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)+/g, "");
+
 export default {
   asyncHandler,
   pick,
+  slugify,
 };

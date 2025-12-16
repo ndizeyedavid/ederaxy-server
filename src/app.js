@@ -6,6 +6,13 @@ import cookieParser from "cookie-parser";
 
 import env from "./config/env.js";
 import authRoutes from "./routes/auth.routes.js";
+import curriculumRoutes from "./routes/curriculum.routes.js";
+import academicLevelRoutes from "./routes/academicLevel.routes.js";
+import academicClassRoutes from "./routes/academicClass.routes.js";
+import classCombinationRoutes from "./routes/classCombination.routes.js";
+import subjectRoutes from "./routes/subject.routes.js";
+import courseRoutes from "./routes/course.routes.js";
+import lessonRoutes from "./routes/lesson.route.js";
 import ApiError from "./utils/apiError.js";
 
 const app = express();
@@ -49,6 +56,13 @@ app.use(
 );
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/curriculums", curriculumRoutes);
+app.use("/api/v1/academic-levels", academicLevelRoutes);
+app.use("/api/v1/academic-classes", academicClassRoutes);
+app.use("/api/v1/class-combinations", classCombinationRoutes);
+app.use("/api/v1/subjects", subjectRoutes);
+app.use("/api/v1/courses", courseRoutes);
+app.use("/api/v1/lessons", lessonRoutes);
 
 app.use((req, res, next) => {
   res.locals.startTime = process.hrtime.bigint();

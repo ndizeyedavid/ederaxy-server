@@ -2,13 +2,18 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const CourseSchema = new Schema(
+const AcademicClassSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
-      minlength: 2,
+    },
+    code: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
     },
     description: {
       type: String,
@@ -16,21 +21,25 @@ const CourseSchema = new Schema(
       default: "",
       maxlength: 2000,
     },
-    subject: {
+    level: {
       type: Schema.Types.ObjectId,
-      ref: "Subject",
+      ref: "AcademicLevel",
       required: true,
       index: true,
     },
-    teacher: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+    order: {
+      type: Number,
+      default: 0,
       index: true,
     },
-    isPublished: {
-      type: Boolean,
-      default: false,
+    combinations: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "ClassCombination",
+        },
+      ],
+      default: [],
     },
   },
   {
@@ -52,18 +61,12 @@ const CourseSchema = new Schema(
   }
 );
 
-CourseSchema.virtual("lessons", {
-  ref: "Lesson",
-  localField: "_id",
-  foreignField: "course",
-  justOne: false,
-});
+AcademicClassSchema.index({ level: 1, code: 1 }, { unique: true });
+AcademicClassSchema.index({ level: 1, order: 1 });
 
-CourseSchema.index(
-  { subject: 1, title: 1 },
-  { unique: true, collation: { locale: "en", strength: 2 } }
+export const AcademicClass = mongoose.model(
+  "AcademicClass",
+  AcademicClassSchema
 );
 
-export const Course = mongoose.model("Course", CourseSchema);
-
-export default Course;
+export default AcademicClass;

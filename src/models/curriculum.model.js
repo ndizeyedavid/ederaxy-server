@@ -2,13 +2,13 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const CourseSchema = new Schema(
+const CurriculumSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
-      minlength: 2,
+      unique: true,
     },
     description: {
       type: String,
@@ -16,21 +16,16 @@ const CourseSchema = new Schema(
       default: "",
       maxlength: 2000,
     },
-    subject: {
-      type: Schema.Types.ObjectId,
-      ref: "Subject",
-      required: true,
-      index: true,
+    country: {
+      type: String,
+      trim: true,
+      default: "Rwanda",
     },
-    teacher: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-      index: true,
-    },
-    isPublished: {
-      type: Boolean,
-      default: false,
+    slug: {
+      type: String,
+      trim: true,
+      unique: true,
+      lowercase: true,
     },
   },
   {
@@ -52,18 +47,12 @@ const CourseSchema = new Schema(
   }
 );
 
-CourseSchema.virtual("lessons", {
-  ref: "Lesson",
-  localField: "_id",
-  foreignField: "course",
-  justOne: false,
-});
-
-CourseSchema.index(
-  { subject: 1, title: 1 },
+CurriculumSchema.index(
+  { name: 1 },
   { unique: true, collation: { locale: "en", strength: 2 } }
 );
+CurriculumSchema.index({ slug: 1 }, { unique: true });
 
-export const Course = mongoose.model("Course", CourseSchema);
+export const Curriculum = mongoose.model("Curriculum", CurriculumSchema);
 
-export default Course;
+export default Curriculum;

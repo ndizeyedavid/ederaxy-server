@@ -1,14 +1,22 @@
 import mongoose from "mongoose";
 
+import { EDUCATION_STAGES } from "../utils/constants.js";
+
 const { Schema } = mongoose;
 
-const CourseSchema = new Schema(
+const AcademicLevelSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
-      minlength: 2,
+    },
+    slug: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      unique: true,
     },
     description: {
       type: String,
@@ -16,21 +24,22 @@ const CourseSchema = new Schema(
       default: "",
       maxlength: 2000,
     },
-    subject: {
-      type: Schema.Types.ObjectId,
-      ref: "Subject",
+    stage: {
+      type: String,
+      enum: Object.values(EDUCATION_STAGES),
       required: true,
       index: true,
     },
-    teacher: {
+    curriculum: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Curriculum",
       required: true,
       index: true,
     },
-    isPublished: {
-      type: Boolean,
-      default: false,
+    order: {
+      type: Number,
+      default: 0,
+      index: true,
     },
   },
   {
@@ -52,18 +61,12 @@ const CourseSchema = new Schema(
   }
 );
 
-CourseSchema.virtual("lessons", {
-  ref: "Lesson",
-  localField: "_id",
-  foreignField: "course",
-  justOne: false,
-});
+AcademicLevelSchema.index({ curriculum: 1, stage: 1, order: 1 });
+AcademicLevelSchema.index({ curriculum: 1, slug: 1 }, { unique: true });
 
-CourseSchema.index(
-  { subject: 1, title: 1 },
-  { unique: true, collation: { locale: "en", strength: 2 } }
+export const AcademicLevel = mongoose.model(
+  "AcademicLevel",
+  AcademicLevelSchema
 );
 
-export const Course = mongoose.model("Course", CourseSchema);
-
-export default Course;
+export default AcademicLevel;

@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const CourseSchema = new Schema(
+const SubjectSchema = new Schema(
   {
     title: {
       type: String,
@@ -14,23 +14,46 @@ const CourseSchema = new Schema(
       type: String,
       trim: true,
       default: "",
-      maxlength: 2000,
+      maxlength: 1000,
     },
-    subject: {
+    curriculum: {
       type: Schema.Types.ObjectId,
-      ref: "Subject",
+      ref: "Curriculum",
       required: true,
       index: true,
     },
-    teacher: {
+    targetLevels: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "AcademicLevel",
+        },
+      ],
+      default: [],
+    },
+    targetClasses: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "AcademicClass",
+        },
+      ],
+      default: [],
+    },
+    targetCombinations: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "ClassCombination",
+        },
+      ],
+      default: [],
+    },
+    createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
-    },
-    isPublished: {
-      type: Boolean,
-      default: false,
     },
   },
   {
@@ -52,18 +75,18 @@ const CourseSchema = new Schema(
   }
 );
 
-CourseSchema.virtual("lessons", {
-  ref: "Lesson",
+SubjectSchema.virtual("courses", {
+  ref: "Course",
   localField: "_id",
-  foreignField: "course",
+  foreignField: "subject",
   justOne: false,
 });
 
-CourseSchema.index(
-  { subject: 1, title: 1 },
+SubjectSchema.index(
+  { curriculum: 1, title: 1 },
   { unique: true, collation: { locale: "en", strength: 2 } }
 );
 
-export const Course = mongoose.model("Course", CourseSchema);
+export const Subject = mongoose.model("Subject", SubjectSchema);
 
-export default Course;
+export default Subject;
