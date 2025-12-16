@@ -75,8 +75,6 @@ UserSchema.pre("validate", function validateNationalId(next) {
   if (this.role === "teacher" && !this.nationalId) {
     this.invalidate("nationalId", "Teachers must provide a national ID");
   }
-
-  // next();
 });
 
 UserSchema.pre("save", async function hashPassword(next) {
@@ -89,7 +87,7 @@ UserSchema.pre("save", async function hashPassword(next) {
     this.password = await bcrypt.hash(this.password, salt);
     return next();
   } catch (error) {
-    // return next(error);
+    // console.log(error)
   }
 });
 

@@ -12,7 +12,6 @@ export const registerSchema = z
       .min(2, "Full name must be at least 2 characters long")
       .transform((value) => value.trim()),
     email: z
-      .string()
       .email("Provide a valid email address")
       .transform((value) => value.toLowerCase().trim()),
     password: z
@@ -23,9 +22,9 @@ export const registerSchema = z
     dob: z.coerce.date().optional(),
     nationalId: z
       .string()
-      .min(5, "National ID must be at least 5 characters long")
+      .min(12, "National ID must be at least 5 characters long")
       .optional(),
-    profilePicture: z.string().url().optional(),
+    profilePicture: z.url().optional(),
     bio: z.string().max(500).optional(),
   })
   .superRefine((data, ctx) => {
