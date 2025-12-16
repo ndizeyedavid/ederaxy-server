@@ -46,3 +46,21 @@ Secure the platform and separate teachers from students.
 1. Users can login/register
 2. Role-based access works
 3. Security foundation locked
+
+# PHASE 2 = Curriculum & learning structure
+
+### Goal
+
+Model **Rwanda’s education flow** cleanly. PLus all the eeducation taxonomy
+
+### What to do
+
+1. Define academic hierarchy
+2. Lock ownership to teachers
+3. Allow students to read only
+4. improved replica of Rwanda's education taxonomy
+
+### Outcome
+
+- Curriculum fully navigable
+- Lessons ready to accept videos

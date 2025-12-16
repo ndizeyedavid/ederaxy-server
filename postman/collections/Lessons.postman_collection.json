@@ -1,0 +1,103 @@
+{
+  "info": {
+    "_postman_id": "d04f6ce0-df19-4d98-9c21-b3df4a6661e1",
+    "name": "Ederaxy - Lessons",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Lessons",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{AccessToken}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/api/v1/lessons?courseId={{courseId}}",
+          "host": ["{{baseURL}}"],
+          "path": ["api", "v1", "lessons"],
+          "query": [
+            {
+              "key": "courseId",
+              "value": "{{courseId}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create Lesson",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{AccessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Introduction to Fractions\",\n  \"description\": \"Understand halves, thirds, and quarters\",\n  \"courseId\": \"{{courseId}}\",\n  \"order\": 1,\n  \"resources\": [\n    {\n      \"label\": \"Lesson Slides\",\n      \"url\": \"https://example.com/fractions-slides\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/v1/lessons",
+          "host": ["{{baseURL}}"],
+          "path": ["api", "v1", "lessons"]
+        }
+      }
+    },
+    {
+      "name": "Update Lesson",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{AccessToken}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"description\": \"Updated lesson objectives\",\n  \"order\": 2,\n  \"resources\": [\n    {\n      \"label\": \"Updated Slides\",\n      \"url\": \"https://example.com/fractions-updated-slides\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/v1/lessons/{{lessonId}}",
+          "host": ["{{baseURL}}"],
+          "path": ["api", "v1", "lessons", "{{lessonId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "AccessToken",
+      "value": ""
+    },
+    {
+      "key": "courseId",
+      "value": ""
+    },
+    {
+      "key": "lessonId",
+      "value": ""
+    }
+  ]
+}
