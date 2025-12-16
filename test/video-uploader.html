@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Video Upload Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        body {
+            background: #0f0f0f;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        input,
+        button {
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+        }
+
+        button {
+            background: #ff0000;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        progress {
+            width: 100%;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Upload Lesson Video (Phase 3)</h1>
+
+        <input type="text" id="lessonId" placeholder="Lesson ID" />
+
+        <input type="file" id="videoFile" accept="video/*" />
+
+        <button onclick="uploadVideo()">Upload Video</button>
+
+        <progress id="progress" value="0" max="100"></progress>
+
+        <p id="status"></p>
+    </div>
+
+    <script>
+        function uploadVideo() {
+            const lessonId = document.getElementById("lessonId").value;
+            const fileInput = document.getElementById("videoFile");
+            const status = document.getElementById("status");
+            const progress = document.getElementById("progress");
+
+            if (!lessonId || fileInput.files.length === 0) {
+                alert("Lesson ID and video file are required");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("lessonId", lessonId);
+            formData.append("video", fileInput.files[0]);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:5000/api/videos/upload");
+
+            // TEMP auth (replace with real JWT later)
+            xhr.setRequestHeader(
+                "Authorization",
+                "Bearer YOUR_TEST_JWT_TOKEN"
+            );
+
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    progress.value = percent;
+                    status.innerText = `Uploading... ${percent}%`;
+                }
+            };
+
+            xhr.onload = () => {
+                if (xhr.status === 200 || xhr.status === 201) {
+                    status.innerText = "Upload successful. Video processing started.";
+                } else {
+                    status.innerText = "Upload failed.";
+                }
+            };
+
+            xhr.onerror = () => {
+                status.innerText = "Network error.";
+            };
+
+            xhr.send(formData);
+        }
+    </script>
+</body>
+
+</html>
