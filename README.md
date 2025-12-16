@@ -16,11 +16,33 @@ A scalable, secure backend for a Rwanda-aligned learning platform that combines 
 ## PHASE 0 = Foundation & App Hygiene {COMPLETED}
 
 ### Goal
+
 Get a **stable, secure Express core** that everything else plugs into.
 
 ### What to do
+
 - Load environment variables early
 - Initialize Express
 - Attach global middleware
 - Centralize error handling
 - Prepare logging
+
+## PHASE 1 = Authentication & role system {COMPLETED}
+
+### Goal
+
+Secure the platform and separate teachers from students.
+
+### What to do
+
+1. Design user identity
+2. Implement password security
+3. Issue JWTs
+4. Protect routes
+5. Enforce roles
+
+### Outcome
+
+1. Users can login/register
+2. Role-based access works
+3. Security foundation locked
