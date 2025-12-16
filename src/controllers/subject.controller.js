@@ -26,7 +26,7 @@ export const create = asyncHandler(async (req, res) => {
 });
 
 export const list = asyncHandler(async (req, res) => {
-  const subjects = await listSubjects(req.query);
+  const subjects = await listSubjects(req.params);
   return successResponse(res, { subjects });
 });
 

@@ -25,7 +25,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listCurriculumsQuerySchema, "query"),
+  //   validateRequest(listCurriculumsQuerySchema, "query"),
   list
 );
 
@@ -41,7 +41,7 @@ router.get(
   "/:curriculumId",
   optionalAuthenticate,
   validateRequest(curriculumIdParamSchema, "params"),
-  validateRequest(curriculumDetailQuerySchema, "query"),
+  //   validateRequest(curriculumDetailQuerySchema, "query"),
   detail
 );
 

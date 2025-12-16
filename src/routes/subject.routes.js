@@ -22,9 +22,9 @@ import {
 const router = Router();
 
 router.get(
-  "/",
-  optionalAuthenticate,
-  validateRequest(listSubjectsQuerySchema, "query"),
+  "/all/:curriculumId",
+  // optionalAuthenticate,
+  // validateRequest(listSubjectsQuerySchema, "query"),
   list
 );
 

@@ -25,7 +25,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listAcademicLevelsQuerySchema, "query"),
+  // validateRequest(listAcademicLevelsQuerySchema, "query"),
   list
 );
 
@@ -41,7 +41,7 @@ router.get(
   "/:levelId",
   optionalAuthenticate,
   validateRequest(academicLevelIdParamSchema, "params"),
-  validateRequest(academicLevelDetailQuerySchema, "query"),
+  // validateRequest(academicLevelDetailQuerySchema, "query"),
   detail
 );
 
