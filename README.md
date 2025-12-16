@@ -1,1 +1,42 @@
 # Ederaxy Backend Server
+
+A scalable, secure backend for a Rwanda-aligned learning platform that combines **video streaming** with a **structured LMS**. Built to support **teachers**, **students**, and **curriculum-first education** without compromising performance or data integrity.
+
+---
+
+## Project's Main Vision
+
+- Model Rwanda’s academic curriculum cleanly
+- Give teachers YouTube-level video delivery
+- Let students learn, resume, and prove progress
+- Keep the backend secure, observable, and scalable from day one
+
+---
+
+## PHASE 0 — Foundation & App Hygiene {COMPLETED}
+
+### Goal
+
+Get a **stable, secure Express core** that everything else plugs into.
+
+### What to do
+
+- Load environment variables early
+- Initialize Express
+- Attach global middleware
+- Centralize error handling
+- Prepare logging
+
+### Dependencies & Configuration
+
+#### `dotenv`
+
+- Load once at startup
+- Required env vars:
+  ```env
+  PORT=
+  MONGO_URI=
+  JWT_SECRET=
+  REDIS_URL=
+  STORAGE_PATH=
+  ```
