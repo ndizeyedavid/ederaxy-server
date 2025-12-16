@@ -44,11 +44,6 @@ const shutdown = async (signal) => {
     console.error("Error during shutdown", error);
     process.exit(1);
   }
-
-  setTimeout(() => {
-    console.warn("Forcing shutdown after timeout.");
-    process.exit(1);
-  }, 10000).unref();
 };
 
 process.on("SIGTERM", shutdown);
