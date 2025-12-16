@@ -1,26 +1,49 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
+import connectDatabase, { disconnectDatabase } from "./config/db.js";
 
-const server = app.listen(env.port, () => {
-  console.log(`Ederaxy server is running on port ${env.port}`);
-});
+let server;
 
-server.on("error", (error) => {
-  console.error("Failed to start server", error);
-  process.exit(1);
-});
+const startServer = async () => {
+  try {
+    await connectDatabase();
 
-const shutdown = (signal) => {
-  console.log(`${signal} received. Shutting down gracefully...`);
-  server.close(() => {
-    console.log("HTTP server closed.");
-    process.exit(0);
-  });
+    server = app.listen(env.port, () => {
+      console.log(`Ederaxy server is running on port ${env.port}`);
+    });
 
-  setTimeout(() => {
-    console.warn("Forcing shutdown after timeout.");
+    server.on("error", (error) => {
+      console.error("Failed to start server", error);
+      process.exit(1);
+    });
+  } catch (error) {
+    console.error("Startup failure", error);
     process.exit(1);
-  }, 10000).unref();
+  }
+};
+
+startServer();
+
+const shutdown = async (signal) => {
+  console.log(`${signal} received. Shutting down gracefully...`);
+
+  try {
+    if (server) {
+      await new Promise((resolve) => {
+        server.close(() => {
+          console.log("HTTP server closed.");
+          resolve();
+        });
+      });
+    }
+
+    await disconnectDatabase();
+    console.log("Disconnected from MongoDB.");
+    process.exit(0);
+  } catch (error) {
+    console.error("Error during shutdown", error);
+    process.exit(1);
+  }
 };
 
 process.on("SIGTERM", shutdown);

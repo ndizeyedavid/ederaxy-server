@@ -2,9 +2,11 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
+import cookieParser from "cookie-parser";
 
 import env from "./config/env.js";
-import authRateLimiter from "./config/rateLimit.js";
+import authRoutes from "./routes/auth.routes.js";
+import ApiError from "./utils/apiError.js";
 
 const app = express();
 
@@ -23,8 +25,14 @@ app.disable("x-powered-by");
 
 app.use(express.json({ limit: env.requestBodyLimit }));
 app.use(express.urlencoded({ extended: true, limit: env.requestBodyLimit }));
+app.use(cookieParser());
 
-app.use(cors());
+app.use(
+  cors({
+    origin: env.frontendOrigins,
+    credentials: true,
+  })
+);
 
 app.use(
   helmet({
@@ -40,7 +48,7 @@ app.use(
   })
 );
 
-app.use("/auth", authRateLimiter);
+app.use("/api/v1/auth", authRoutes);
 
 app.use((req, res, next) => {
   res.locals.startTime = process.hrtime.bigint();
@@ -54,15 +62,16 @@ app.get("/health", (_req, res) => {
 // Centralized error handler
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
-  const status = err.status || err.statusCode || 500;
+  const status = err.statusCode || err.status || 500;
 
-  if (status >= 500) {
+  if (!(err instanceof ApiError) && status >= 500) {
     console.error("Unexpected error", err);
   }
 
   res.status(status).json({
     status: "error",
     message: err.message || "Internal server error",
+    errors: err.errors || undefined,
   });
 });
 
