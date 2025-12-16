@@ -13,30 +13,14 @@ A scalable, secure backend for a Rwanda-aligned learning platform that combines 
 
 ---
 
-## PHASE 0 — Foundation & App Hygiene {COMPLETED}
+## PHASE 0 = Foundation & App Hygiene {COMPLETED}
 
 ### Goal
-
 Get a **stable, secure Express core** that everything else plugs into.
 
 ### What to do
-
 - Load environment variables early
 - Initialize Express
 - Attach global middleware
 - Centralize error handling
 - Prepare logging
-
-### Dependencies & Configuration
-
-#### `dotenv`
-
-- Load once at startup
-- Required env vars:
-  ```env
-  PORT=
-  MONGO_URI=
-  JWT_SECRET=
-  REDIS_URL=
-  STORAGE_PATH=
-  ```
