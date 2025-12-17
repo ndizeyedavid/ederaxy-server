@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Video Upload Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        :root {
+            color-scheme: dark;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: #f5f5f5;
+            font-family: "Inter", "Segoe UI", Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            background: #1c1c1c;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+        }
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+
+        input,
+        button,
+        progress {
+            width: 100%;
+        }
+
+        input {
+            margin-bottom: 16px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid #2f2f2f;
+            background: #111;
+            color: inherit;
+        }
+
+        input[type="file"] {
+            padding: 8px;
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff3b30, #ff6b6b);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        button.secondary {
+            background: #27272a;
+            color: #e5e7eb;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(255, 59, 48, 0.25);
+        }
+
+        button.secondary:hover {
+            box-shadow: 0 8px 18px rgba(39, 39, 42, 0.35);
+        }
+
+        progress {
+            height: 12px;
+            border-radius: 999px;
+            background: #2f2f2f;
+            margin: 12px 0;
+        }
+
+        progress::-webkit-progress-bar {
+            background: #2f2f2f;
+            border-radius: 999px;
+        }
+
+        progress::-webkit-progress-value {
+            background: linear-gradient(135deg, #ff3b30, #ff6b6b);
+            border-radius: 999px;
+        }
+
+        #status {
+            min-height: 20px;
+            margin-bottom: 16px;
+            color: #facc15;
+            font-size: 14px;
+        }
+
+        #response {
+            padding: 16px;
+            border-radius: 10px;
+            background: #111827;
+            font-size: 13px;
+            overflow-x: auto;
+            max-height: 280px;
+            border: 1px solid #1f2937;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .actions button {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        small {
+            display: block;
+            margin-bottom: 16px;
+            color: #9ca3af;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Lesson Video Uploader (Phase 3)</h1>
+
+        <label for="baseUrl">API Base URL</label>
+        <input type="text" id="baseUrl" placeholder="http://localhost:8080" value="http://localhost:8080" />
+
+        <label for="token">JWT Access Token (teacher)</label>
+        <input type="text" id="token" placeholder="paste bearer token" />
+
+        <label for="lessonId">Lesson ID</label>
+        <input type="text" id="lessonId" placeholder="Lesson ID" />
+
+        <label for="videoFile">Video file</label>
+        <input type="file" id="videoFile" accept="video/*" />
+
+        <div class="actions">
+            <button id="uploadBtn" type="button">Upload Video</button>
+            <button id="pollBtn" type="button" class="secondary">Check Status</button>
+        </div>
+
+        <progress id="progress" value="0" max="100"></progress>
+
+        <p id="status"></p>
+
+        <small>
+            Upload sends <code>POST /api/v1/lessons/:lessonId/video</code> with the selected file.<br />
+            "Check Status" calls <code>GET /api/v1/lessons/:lessonId/video</code>.
+        </small>
+
+        <pre id="response">{}</pre>
+    </div>
+
+    <script>
+        (() => {
+            const $ = (id) => document.getElementById(id);
+            const baseUrlInput = $("baseUrl");
+            const tokenInput = $("token");
+            const lessonIdInput = $("lessonId");
+            const fileInput = $("videoFile");
+            const progress = $("progress");
+            const status = $("status");
+            const response = $("response");
+            const uploadBtn = $("uploadBtn");
+            const pollBtn = $("pollBtn");
+
+            const resetFeedback = () => {
+                status.textContent = "";
+                response.textContent = "{}";
+                progress.value = 0;
+            };
+
+            const buildBaseUrl = () => {
+                const raw = baseUrlInput.value.trim() || "http://localhost:8080";
+                return raw.replace(/\/+$/, "");
+            };
+
+            const authHeader = () => {
+                const token = tokenInput.value.trim();
+                return token ? { Authorization: `Bearer ${token}` } : {};
+            };
+
+            const handleError = (error) => {
+                console.error(error);
+                status.textContent = "❌ " + (error.message || "Unexpected error");
+            };
+
+            const uploadVideo = () => {
+                resetFeedback();
+
+                const lessonId = lessonIdInput.value.trim();
+                const file = fileInput.files[0];
+
+                if (!lessonId || !file) {
+                    alert("Lesson ID and video file are required");
+                    return;
+                }
+
+                const endpoint = `${buildBaseUrl()}/api/v1/lessons/${lessonId}/video`;
+                const formData = new FormData();
+                formData.append("video", file);
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", endpoint);
+
+                const headers = authHeader();
+                Object.entries(headers).forEach(([key, value]) => {
+                    xhr.setRequestHeader(key, value);
+                });
+
+                xhr.upload.onprogress = (event) => {
+                    if (event.lengthComputable) {
+                        const percent = Math.round((event.loaded / event.total) * 100);
+                        progress.value = percent;
+                        status.textContent = `Uploading… ${percent}%`;
+                    }
+                };
+
+                xhr.onload = () => {
+                    try {
+                        const body = xhr.responseText ? JSON.parse(xhr.responseText) : {};
+                        response.textContent = JSON.stringify(body, null, 2);
+                    } catch (err) {
+                        response.textContent = xhr.responseText || "(no response body)";
+                    }
+
+                    if (xhr.status === 200 || xhr.status === 201) {
+                        status.textContent = "✅ Upload successful. Video processing has started.";
+                    } else {
+                        status.textContent = `❌ Upload failed with status ${xhr.status}`;
+                    }
+                };
+
+                xhr.onerror = () => {
+                    status.textContent = "❌ Network error while uploading.";
+                };
+
+                xhr.send(formData);
+            };
+
+            const checkStatus = async () => {
+                resetFeedback();
+
+                const lessonId = lessonIdInput.value.trim();
+
+                if (!lessonId) {
+                    alert("Lesson ID is required");
+                    return;
+                }
+
+                const endpoint = `${buildBaseUrl()}/api/v1/lessons/${lessonId}/video`;
+
+                try {
+                    const headers = {
+                        Accept: "application/json",
+                        ...authHeader(),
+                    };
+
+                    const res = await fetch(endpoint, {
+                        method: "GET",
+                        headers,
+                    });
+
+                    const body = await res.json().catch(() => ({}));
+                    response.textContent = JSON.stringify(body, null, 2);
+
+                    if (res.ok) {
+                        status.textContent = "ℹ️ Video status fetched.";
+                    } else {
+                        status.textContent = `❌ Request failed (${res.status})`;
+                    }
+                } catch (error) {
+                    handleError(error);
+                }
+            };
+
+            uploadBtn.addEventListener("click", () => {
+                try {
+                    uploadVideo();
+                } catch (error) {
+                    handleError(error);
+                }
+            });
+
+            pollBtn.addEventListener("click", () => {
+                checkStatus().catch(handleError);
+            });
+        })();
+    </script>
+</body>
+
+</html>

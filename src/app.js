@@ -1,3 +1,4 @@
+import path from "path";
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -14,6 +15,7 @@ import subjectRoutes from "./routes/subject.routes.js";
 import courseRoutes from "./routes/course.routes.js";
 import lessonRoutes from "./routes/lesson.route.js";
 import ApiError from "./utils/apiError.js";
+import { toAbsolutePath } from "./utils/storage.js";
 
 const app = express();
 
@@ -40,6 +42,11 @@ app.use(
     credentials: true,
   })
 );
+
+if (env.storagePath) {
+  const storageAbsolutePath = toAbsolutePath("");
+  app.use("/storage", express.static(storageAbsolutePath));
+}
 
 app.use(
   helmet({

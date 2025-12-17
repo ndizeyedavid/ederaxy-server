@@ -35,6 +35,21 @@ export const CLASS_COMBINATION_TYPES = {
   GENERAL: "general",
 };
 
+export const VIDEO_STATES = {
+  UPLOADED: "uploaded",
+  PROCESSING: "processing",
+  READY: "ready",
+  FAILED: "failed",
+};
+
+export const VIDEO_MIME_TYPES = [
+  "video/mp4",
+  "video/quicktime",
+  "video/x-msvideo",
+  "video/x-matroska",
+  "video/webm",
+];
+
 export default {
   USER_ROLES,
   TOKEN_TYPES,
@@ -42,4 +57,6 @@ export default {
   EDUCATION_STAGES,
   EDUCATION_STAGE_LABELS,
   CLASS_COMBINATION_TYPES,
+  VIDEO_STATES,
+  VIDEO_MIME_TYPES,
 };

@@ -67,6 +67,15 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET ?? "",
   redisUrl: process.env.REDIS_URL ?? "",
   storagePath: process.env.STORAGE_PATH ?? "",
+  ffmpegPath: process.env.FFMPEG_PATH || process.env.FFMPEG_BINARY,
+  ffprobePath: process.env.FFPROBE_PATH || process.env.FFPROBE_BINARY,
+  videoUploadMaxFileSize: process.env.VIDEO_UPLOAD_MAX_FILE_SIZE
+    ? Number.parseInt(process.env.VIDEO_UPLOAD_MAX_FILE_SIZE, 10)
+    : undefined,
+  videoProcessingConcurrency: Number.parseInt(
+    process.env.VIDEO_PROCESSING_CONCURRENCY ?? "2",
+    10
+  ),
   frontendOrigin: frontendOrigins[0],
   frontendOrigins,
   requestBodyLimit: process.env.REQUEST_BODY_LIMIT || "20mb",

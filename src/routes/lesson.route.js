@@ -12,7 +12,14 @@ import {
   lessonIdParamSchema,
   listLessonSchema,
 } from "../validations/lesson.validation.js";
-import { create, list, update } from "../controllers/lesson.controller.js";
+import {
+  create,
+  list,
+  update,
+  uploadVideo,
+  getVideo,
+} from "../controllers/lesson.controller.js";
+import { singleVideoUpload } from "../middleware/videoUpload.middleware.js";
 
 const router = Router();
 
@@ -38,6 +45,22 @@ router.patch(
   validateRequest(lessonIdParamSchema, "params"),
   // validateRequest(updateLessonSchema),
   update
+);
+
+router.post(
+  "/:lessonId/video",
+  authenticate,
+  ensureTeacher,
+  validateRequest(lessonIdParamSchema, "params"),
+  singleVideoUpload,
+  uploadVideo
+);
+
+router.get(
+  "/:lessonId/video",
+  optionalAuthenticate,
+  // validateRequest(lessonIdParamSchema, "params"),
+  getVideo
 );
 
 export default router;

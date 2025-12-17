@@ -1,12 +1,15 @@
 import app from "./app.js";
 import { env } from "./config/env.js";
 import connectDatabase, { disconnectDatabase } from "./config/db.js";
+import { ensureBaseStorage } from "./utils/storage.js";
+import "./queues/video.worker.js";
 
 let server;
 
 const startServer = async () => {
   try {
     await connectDatabase();
+    await ensureBaseStorage();
 
     server = app.listen(env.port, () => {
       console.log(`Ederaxy server is running on port ${env.port}`);
