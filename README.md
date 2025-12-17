@@ -64,3 +64,17 @@ Model **Rwanda’s education flow** cleanly. PLus all the eeducation taxonomy
 
 - Curriculum fully navigable
 - Lessons ready to accept videos
+
+# PHASE 3 = Video upload & processing (CRITICAL PHASE) {COMPLETED}
+
+### Goal
+
+Achieving **streaming quality** without killing the main server.
+
+### expectations
+
+1. Accept uploads safely
+2. Queue heavy processing
+3. Transcode into HLS
+4. Store results
+5. Update DB state
