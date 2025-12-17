@@ -3,46 +3,452 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>HLS Streaming Test</title>
+    <title>Lesson Video Player</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Video.js styles -->
     <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet" />
-
     <style>
+        :root {
+            color-scheme: dark;
+            font-family: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background: #0f0f0f;
-            color: #fff;
-            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #1d1d1f 0%, #0b0b0c 60%, #050507 100%);
+            color: #f5f5f7;
             display: flex;
             justify-content: center;
-            padding-top: 40px;
+            padding: 48px 16px;
         }
 
         .container {
-            width: 100%;
-            max-width: 900px;
+            width: min(960px, 100%);
+            display: grid;
+            gap: 24px;
+            padding: 32px;
+            border-radius: 18px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(28px);
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.35);
         }
 
-        h1 {
-            font-size: 18px;
-            margin-bottom: 12px;
+        header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        header h1 {
+            font-size: clamp(1.6rem, 4vw, 2.1rem);
+            font-weight: 600;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        header p {
+            margin: 0;
+            color: rgba(226, 232, 240, 0.75);
+            font-size: 0.95rem;
+        }
+
+        .card {
+            padding: 24px;
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(94, 114, 146, 0.22);
+            border-radius: 16px;
+            display: grid;
+            gap: 18px;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(148, 163, 184, 0.85);
+        }
+
+        .inputs {
+            display: grid;
+            gap: 14px;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 0.92rem;
+            color: rgba(226, 232, 240, 0.85);
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid rgba(94, 114, 146, 0.35);
+            border-radius: 12px;
+            background: rgba(7, 12, 24, 0.85);
+            color: #f8fafc;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(165, 180, 252, 0.75);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.28);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: #fff;
+            box-shadow: 0 14px 30px rgba(99, 102, 241, 0.35);
+        }
+
+        button.secondary {
+            background: rgba(15, 118, 110, 0.25);
+            color: #5eead4;
+            border: 1px solid rgba(13, 148, 136, 0.4);
+            box-shadow: 0 12px 26px rgba(13, 148, 136, 0.25);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .player-wrapper {
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(15, 23, 42, 0.45);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+        }
+
+        #status {
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid rgba(99, 102, 241, 0.35);
+            font-size: 0.92rem;
+            color: rgba(226, 232, 240, 0.85);
+        }
+
+        #status strong {
+            color: #c4c8ff;
+        }
+
+        #responseBox {
+            padding: 16px;
+            border-radius: 14px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            font-family: "JetBrains Mono", "Fira Code", monospace;
+            font-size: 0.82rem;
+            color: rgba(226, 232, 240, 0.85);
+            max-height: 240px;
+            overflow: auto;
+            white-space: pre-wrap;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 680px) {
+            body {
+                padding: 24px 12px;
+            }
+
+            .container {
+                padding: 24px;
+                gap: 18px;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>HLS Streaming Test (Phase 3 & 4)</h1>
+        <header>
+            <h1>Lesson Video Player</h1>
+            <p>Point to any lesson with a processed video to stream its HLS output and inspect the variant ladder.</p>
+        </header>
 
-        <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="100%" height="500"
-            data-setup='{}'>
-            <source src="http://localhost:5000/videos/YOUR_VIDEO_ID/master.m3u8" type="application/x-mpegURL" />
-        </video>
+        <section class="card" aria-labelledby="config-heading">
+            <h2 id="config-heading">Configuration</h2>
+            <div class="inputs">
+                <label>
+                    Base URL
+                    <input id="baseUrl" type="text" placeholder="http://localhost:8080" autocomplete="off" />
+                </label>
+                <label>
+                    JWT Token
+                    <input id="token" type="text" placeholder="Paste a valid Bearer token" autocomplete="off" />
+                </label>
+                <label>
+                    Lesson ID
+                    <input id="lessonId" type="text" placeholder="Mongo ObjectId for the lesson" autocomplete="off" />
+                </label>
+            </div>
+            <div class="actions">
+                <button class="primary" id="loadButton" type="button">Load Video</button>
+                <button class="secondary" id="pollButton" type="button">Poll Status</button>
+                <button class="secondary" id="copyPlaylist" type="button">Copy master.m3u8 URL</button>
+            </div>
+        </section>
+
+        <section class="card" aria-labelledby="status-heading">
+            <h2 id="status-heading">Status</h2>
+            <div id="status">Idle.</div>
+            <div id="responseBox" class="hidden"></div>
+        </section>
+
+        <section class="player-wrapper" aria-label="Video Player">
+            <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" width="800px" height="480"
+                data-setup='{"html5":{"hls":{"overrideNative":true}}}'>
+                <source id="hlsSource" src="" type="application/x-mpegURL" />
+                Your browser doesn't support HLS playback.
+            </video>
+        </section>
     </div>
 
-    <!-- Video.js -->
     <script src="https://unpkg.com/video.js/dist/video.min.js"></script>
+    <script>
+        const baseUrlInput = document.getElementById("baseUrl");
+        const tokenInput = document.getElementById("token");
+        const lessonIdInput = document.getElementById("lessonId");
+        const loadButton = document.getElementById("loadButton");
+        const pollButton = document.getElementById("pollButton");
+        const copyPlaylistButton = document.getElementById("copyPlaylist");
+        const statusBox = document.getElementById("status");
+        const responseBox = document.getElementById("responseBox");
+        const videoElement = document.getElementById("videoPlayer");
+        const sourceElement = document.getElementById("hlsSource");
+
+        const player = videojs(videoElement);
+
+        const ensureLeadingSlash = (value) => {
+            if (!value) return "";
+            return value.startsWith("/") ? value : `/${value}`;
+        };
+
+        const extractVideo = (payload) => payload?.data?.video ?? payload?.video ?? null;
+
+        const normalizeBaseUrl = () => {
+            const raw = baseUrlInput.value.trim() || "http://localhost:8080";
+            return raw.replace(/\/+$/, "");
+        };
+
+        const authHeaders = () => {
+            const token = tokenInput.value.trim();
+            return token ? { Authorization: `Bearer ${token}` } : {};
+        };
+
+        const setStatus = (message, type = "info") => {
+            const palette = {
+                info: {
+                    bg: "rgba(30, 41, 59, 0.65)",
+                    border: "rgba(99, 102, 241, 0.35)",
+                    text: "rgba(226, 232, 240, 0.85)",
+                },
+                success: {
+                    bg: "rgba(22, 101, 52, 0.4)",
+                    border: "rgba(34, 197, 94, 0.45)",
+                    text: "#bbf7d0",
+                },
+                error: {
+                    bg: "rgba(127, 29, 29, 0.4)",
+                    border: "rgba(248, 113, 113, 0.45)",
+                    text: "#fecaca",
+                },
+            };
+
+            const paletteEntry = palette[type] || palette.info;
+            statusBox.textContent = message;
+            statusBox.style.background = paletteEntry.bg;
+            statusBox.style.borderColor = paletteEntry.border;
+            statusBox.style.color = paletteEntry.text;
+        };
+
+        const showResponse = (data) => {
+            if (!data) {
+                responseBox.classList.add("hidden");
+                responseBox.textContent = "";
+                return;
+            }
+
+            responseBox.classList.remove("hidden");
+            responseBox.textContent = JSON.stringify(data, null, 2);
+        };
+
+        const buildLessonUrl = () => {
+            const lessonId = lessonIdInput.value.trim();
+            if (!lessonId) {
+                throw new Error("Lesson ID is required");
+            }
+            return `${normalizeBaseUrl()}/api/v1/lessons/${lessonId}/video`;
+        };
+
+        const fetchLessonVideo = async () => {
+            const url = buildLessonUrl();
+            setStatus("Fetching lesson video metadata...");
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...authHeaders(),
+                },
+            });
+
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => ({}));
+                const error = new Error(errorBody?.message || `Request failed: ${response.status}`);
+                error.responseBody = errorBody;
+                throw error;
+            }
+
+            return response.json();
+        };
+
+        const attachVideo = (payload) => {
+            const video = extractVideo(payload);
+            const masterUrl = video?.hlsMasterPlaylistPath
+                ? `${normalizeBaseUrl()}/storage${ensureLeadingSlash(video.hlsMasterPlaylistPath)}`
+                : null;
+
+            if (!masterUrl) {
+                throw new Error("Video is not ready yet or HLS master playlist is missing");
+            }
+
+            showResponse(payload);
+            setStatus("Loaded! Hit play to stream.", "success");
+
+            sourceElement.src = masterUrl;
+            player.src({ src: masterUrl, type: "application/x-mpegURL" });
+            player.ready(() => {
+                player.pause();
+                player.currentTime(0);
+            });
+        };
+
+        const loadVideo = async () => {
+            try {
+                const payload = await fetchLessonVideo();
+                attachVideo(payload);
+            } catch (error) {
+                console.error(error);
+                setStatus(error.message || "Failed to load video", "error");
+                showResponse(error.responseBody || null);
+            }
+        };
+
+        const pollStatus = async () => {
+            try {
+                const payload = await fetchLessonVideo();
+                const video = extractVideo(payload);
+
+                if (video?.status === "ready") {
+                    setStatus("Video is ready to play.", "success");
+                } else {
+                    setStatus(`Current status: ${video?.status ?? "unknown"}`);
+                }
+
+                showResponse(payload);
+            } catch (error) {
+                console.error(error);
+                setStatus(error.message || "Polling failed", "error");
+                showResponse(error.responseBody || null);
+            }
+        };
+
+        const copyMasterUrl = async () => {
+            try {
+                const url = buildLessonUrl();
+                const payload = await fetch(url, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...authHeaders(),
+                    },
+                }).then((res) => res.json());
+
+                const video = extractVideo(payload);
+                const masterUrl = video?.hlsMasterPlaylistPath
+                    ? `${normalizeBaseUrl()}${ensureLeadingSlash(video.hlsMasterPlaylistPath)}`
+                    : null;
+
+                if (!masterUrl) {
+                    throw new Error("No master playlist to copy yet");
+                }
+
+                await navigator.clipboard.writeText(masterUrl);
+                setStatus("Copied master.m3u8 URL", "success");
+            } catch (error) {
+                console.error(error);
+                setStatus(error.message || "Failed to copy URL", "error");
+            }
+        };
+
+        loadButton.addEventListener("click", loadVideo);
+        pollButton.addEventListener("click", pollStatus);
+        copyPlaylistButton.addEventListener("click", copyMasterUrl);
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const storedBase = localStorage.getItem("videoPlayerBaseUrl");
+            const storedToken = localStorage.getItem("videoPlayerToken");
+            const storedLesson = localStorage.getItem("videoPlayerLessonId");
+
+            if (storedBase) baseUrlInput.value = storedBase;
+            if (storedToken) tokenInput.value = storedToken;
+            if (storedLesson) lessonIdInput.value = storedLesson;
+        });
+
+        [baseUrlInput, tokenInput, lessonIdInput].forEach((input) => {
+            input.addEventListener("change", () => {
+                localStorage.setItem("videoPlayerBaseUrl", baseUrlInput.value.trim());
+                localStorage.setItem("videoPlayerToken", tokenInput.value.trim());
+                localStorage.setItem("videoPlayerLessonId", lessonIdInput.value.trim());
+            });
+        });
+    </script>
 </body>
 
 </html>

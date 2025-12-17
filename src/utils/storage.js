@@ -35,11 +35,13 @@ export const ensureHlsFolder = async (folderName) => {
   return hlsFolder;
 };
 
-export const getRelativeUploadPath = (folderName, fileName) =>
-  path.join("uploads", folderName, fileName);
+const toPosix = (relativePath) => relativePath.replace(/\\/g, "/");
 
-export const getRelativeHlsPath = (folderName, fileName) =>
-  path.join("hls", folderName, fileName);
+export const getRelativeUploadPath = (folderName, fileName) =>
+  toPosix(path.join("uploads", folderName, fileName));
+
+export const getRelativeHlsPath = (folderName, fileName = "") =>
+  toPosix(path.join("hls", folderName, fileName));
 
 export const toAbsolutePath = (relativePath) =>
   path.join(resolveStorageBase(), relativePath);
