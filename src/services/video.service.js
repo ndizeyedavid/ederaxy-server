@@ -10,6 +10,8 @@ import {
   getRelativeUploadPath,
   ensureHlsFolder,
   getRelativeHlsPath,
+  ensureThumbnailsFolder,
+  getRelativeThumbnailPath,
   toAbsolutePath,
 } from "../utils/storage.js";
 import { addVideoProcessingJob } from "../queues/video.queue.js";
@@ -117,12 +119,71 @@ const buildVideoResponse = (video, user) => {
     lesson: video.lesson?._id ?? video.lesson,
     status: video.status,
     hlsMasterPlaylistPath: video.hlsMasterPlaylistPath,
+    thumbnailUrl: video.thumbnailUrl,
+    thumbnailPath: video.thumbnailPath,
+    thumbnailMimeType: video.thumbnailMimeType,
+    thumbnailSize: video.thumbnailSize,
     variants: video.variants,
     duration: video.duration,
     failureReason: isOwner ? video.failureReason : undefined,
     createdAt: video.createdAt,
     updatedAt: video.updatedAt,
   };
+};
+
+export const uploadLessonVideoThumbnail = async ({ lessonId, user, file }) => {
+  if (!file) {
+    throw ApiError.badRequest("Thumbnail file is required");
+  }
+
+  await assertLessonOwnership(lessonId, user);
+
+  const video = await Video.findOne({ lesson: lessonId }).sort({
+    createdAt: -1,
+  });
+
+  if (!video) {
+    throw ApiError.notFound("Video not found");
+  }
+
+  if (!video.storageKey) {
+    throw ApiError.badRequest("Video storage key is missing");
+  }
+
+  const extensionFromMime = (mimeType) => {
+    if (mimeType === "image/jpeg") return ".jpg";
+    if (mimeType === "image/png") return ".png";
+    if (mimeType === "image/webp") return ".webp";
+    if (mimeType === "image/gif") return ".gif";
+    return "";
+  };
+
+  const fileExtension =
+    extensionFromMime(file.mimetype) ||
+    path.extname(file.originalname || "").toLowerCase() ||
+    ".jpg";
+  const fileName = `thumbnail${fileExtension}`;
+
+  const thumbnailsDir = await ensureThumbnailsFolder(video.storageKey);
+  const absoluteThumbnailPath = path.join(thumbnailsDir, fileName);
+
+  if (video.thumbnailPath) {
+    const existingAbsolute = toAbsolutePath(video.thumbnailPath);
+    await fs.rm(existingAbsolute, { force: true }).catch(() => {});
+  }
+
+  await fs.writeFile(absoluteThumbnailPath, file.buffer);
+
+  const relativePath = getRelativeThumbnailPath(video.storageKey, fileName);
+  const publicUrl = `/${path.posix.join("storage", relativePath)}`;
+
+  video.thumbnailPath = relativePath;
+  video.thumbnailUrl = publicUrl;
+  video.thumbnailMimeType = file.mimetype;
+  video.thumbnailSize = file.size;
+  await video.save();
+
+  return buildVideoResponse(video.toObject ? video.toObject() : video, user);
 };
 
 export const getVideoById = async (videoId, user) => {
@@ -354,6 +415,7 @@ export const processVideo = async (videoId, ffmpegInstance) => {
 
 export default {
   uploadLessonVideo,
+  uploadLessonVideoThumbnail,
   getVideoById,
   getLessonVideo,
   processVideo,
