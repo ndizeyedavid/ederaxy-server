@@ -17,9 +17,11 @@ import {
   list,
   update,
   uploadVideo,
+  uploadVideoThumbnail,
   getVideo,
 } from "../controllers/lesson.controller.js";
 import { singleVideoUpload } from "../middleware/videoUpload.middleware.js";
+import { singleThumbnailUpload } from "../middleware/thumbnailUpload.middleware.js";
 
 const router = Router();
 
@@ -61,6 +63,15 @@ router.get(
   optionalAuthenticate,
   // validateRequest(lessonIdParamSchema, "params"),
   getVideo
+);
+
+router.post(
+  "/:lessonId/video/thumbnail",
+  authenticate,
+  ensureTeacher,
+  validateRequest(lessonIdParamSchema, "params"),
+  singleThumbnailUpload,
+  uploadVideoThumbnail
 );
 
 export default router;

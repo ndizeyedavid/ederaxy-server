@@ -15,12 +15,19 @@ export const getUploadsDir = () => path.join(resolveStorageBase(), "uploads");
 
 export const getHlsDir = () => path.join(resolveStorageBase(), "hls");
 
+export const getThumbnailsDir = () =>
+  path.join(resolveStorageBase(), "thumbnails");
+
 export const ensureDir = async (dirPath) => {
   await fs.mkdir(dirPath, { recursive: true });
 };
 
 export const ensureBaseStorage = async () => {
-  await Promise.all([ensureDir(getUploadsDir()), ensureDir(getHlsDir())]);
+  await Promise.all([
+    ensureDir(getUploadsDir()),
+    ensureDir(getHlsDir()),
+    ensureDir(getThumbnailsDir()),
+  ]);
 };
 
 export const ensureUploadFolder = async (folderName) => {
@@ -35,6 +42,12 @@ export const ensureHlsFolder = async (folderName) => {
   return hlsFolder;
 };
 
+export const ensureThumbnailsFolder = async (folderName) => {
+  const thumbnailsFolder = path.join(getThumbnailsDir(), folderName);
+  await ensureDir(thumbnailsFolder);
+  return thumbnailsFolder;
+};
+
 const toPosix = (relativePath) => relativePath.replace(/\\/g, "/");
 
 export const getRelativeUploadPath = (folderName, fileName) =>
@@ -42,6 +55,9 @@ export const getRelativeUploadPath = (folderName, fileName) =>
 
 export const getRelativeHlsPath = (folderName, fileName = "") =>
   toPosix(path.join("hls", folderName, fileName));
+
+export const getRelativeThumbnailPath = (folderName, fileName) =>
+  toPosix(path.join("thumbnails", folderName, fileName));
 
 export const toAbsolutePath = (relativePath) =>
   path.join(resolveStorageBase(), relativePath);
@@ -51,9 +67,12 @@ export default {
   ensureBaseStorage,
   ensureUploadFolder,
   ensureHlsFolder,
+  ensureThumbnailsFolder,
   getUploadsDir,
   getHlsDir,
+  getThumbnailsDir,
   getRelativeUploadPath,
   getRelativeHlsPath,
+  getRelativeThumbnailPath,
   toAbsolutePath,
 };

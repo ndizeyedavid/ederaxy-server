@@ -7,6 +7,7 @@ import {
 } from "../services/lesson.service.js";
 import {
   uploadLessonVideo,
+  uploadLessonVideoThumbnail,
   getLessonVideo,
 } from "../services/video.service.js";
 
@@ -54,10 +55,21 @@ export const getVideo = asyncHandler(async (req, res) => {
   return successResponse(res, { video });
 });
 
+export const uploadVideoThumbnail = asyncHandler(async (req, res) => {
+  const video = await uploadLessonVideoThumbnail({
+    lessonId: req.params.lessonId,
+    user: req.user,
+    file: req.file,
+  });
+
+  return successResponse(res, { video }, "Thumbnail uploaded successfully");
+});
+
 export default {
   create,
   list,
   update,
   uploadVideo,
+  uploadVideoThumbnail,
   getVideo,
 };

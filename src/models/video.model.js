@@ -72,6 +72,25 @@ const VideoSchema = new Schema(
       trim: true,
       default: null,
     },
+    thumbnailPath: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    thumbnailUrl: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    thumbnailMimeType: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    thumbnailSize: {
+      type: Number,
+      default: null,
+    },
     variants: {
       type: [VideoVariantSchema],
       default: [],
