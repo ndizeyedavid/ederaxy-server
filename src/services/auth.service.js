@@ -13,6 +13,18 @@ const publicUserFields = [
   "nationalId",
   "profilePicture",
   "bio",
+  "phone",
+  "teacherTitle",
+  "yearsExperience",
+  "highestQualification",
+  "subjects",
+  "schoolName",
+  "schoolType",
+  "country",
+  "city",
+  "preferredCurriculumId",
+  "agreedToTermsAt",
+  "termsVersion",
   "createdAt",
   "updatedAt",
 ];
@@ -41,6 +53,12 @@ export const registerUser = async (payload) => {
     email,
     role,
   };
+
+  if (userData.agreeToTerms) {
+    userData.agreedToTermsAt = new Date();
+  }
+
+  delete userData.agreeToTerms;
 
   if (userData.dob) {
     userData.dob = new Date(userData.dob);

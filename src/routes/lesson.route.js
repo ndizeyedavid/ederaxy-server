@@ -69,7 +69,7 @@ router.post(
   "/:lessonId/video/thumbnail",
   authenticate,
   ensureTeacher,
-  validateRequest(lessonIdParamSchema, "params"),
+  // validateRequest(lessonIdParamSchema, "params"),
   singleThumbnailUpload,
   uploadVideoThumbnail
 );
