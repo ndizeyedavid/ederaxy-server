@@ -26,7 +26,7 @@ const AcademicLevelSchema = new Schema(
     },
     stage: {
       type: String,
-      enum: Object.values(EDUCATION_STAGES),
+      // enum: Object.values(EDUCATION_STAGES),
       required: true,
       index: true,
     },

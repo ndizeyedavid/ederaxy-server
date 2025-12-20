@@ -4,6 +4,7 @@ import { asyncHandler } from "../utils/helpers.js";
 import {
   loginUser,
   registerUser,
+  uploadProfilePicture,
   toPublicUser,
 } from "../services/auth.service.js";
 
@@ -25,6 +26,23 @@ export const me = asyncHandler(async (req, res) => {
   return successResponse(res, { user: toPublicUser(req.user) });
 });
 
+export const uploadMyProfilePicture = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw ApiError.unauthorized("Authentication required");
+  }
+
+  const user = await uploadProfilePicture({
+    user: req.user,
+    file: req.file,
+  });
+
+  return successResponse(
+    res,
+    { user },
+    "Profile picture uploaded successfully"
+  );
+});
+
 export const requireAuth = (_req, _res, next) =>
   next(ApiError.unauthorized("Authentication required"));
 
@@ -32,4 +50,6 @@ export default {
   register,
   login,
   me,
+  uploadMyProfilePicture,
+  requireAuth,
 };

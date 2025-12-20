@@ -26,6 +26,42 @@ export const registerSchema = z
       .optional(),
     profilePicture: z.url().optional(),
     bio: z.string().max(500).optional(),
+    phone: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    teacherTitle: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    yearsExperience: z.coerce.number().int().min(0).optional(),
+    highestQualification: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    subjects: z.array(z.string().transform((value) => value.trim())).optional(),
+    schoolName: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    schoolType: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    country: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    city: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
+    preferredCurriculumId: z.string().optional(),
+    agreeToTerms: z.boolean().optional(),
+    termsVersion: z
+      .string()
+      .transform((value) => value.trim())
+      .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.role === USER_ROLES.TEACHER && !data.nationalId) {

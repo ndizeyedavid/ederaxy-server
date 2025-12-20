@@ -32,7 +32,7 @@ router.post(
   "/",
   authenticate,
   ensureTeacher,
-  validateRequest(createCourseSchema),
+  // validateRequest(createCourseSchema),
   create
 );
 

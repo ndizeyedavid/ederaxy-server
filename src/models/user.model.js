@@ -29,6 +29,64 @@ const UserSchema = new Schema(
       default: "",
       trim: true,
     },
+    phone: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    teacherTitle: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    yearsExperience: {
+      type: Number,
+      min: 0,
+      default: null,
+    },
+    highestQualification: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    subjects: {
+      type: [String],
+      default: [],
+    },
+    schoolName: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    schoolType: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    country: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    city: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    preferredCurriculumId: {
+      type: Schema.Types.ObjectId,
+      ref: "Curriculum",
+      default: null,
+    },
+    agreedToTermsAt: {
+      type: Date,
+      default: null,
+    },
+    termsVersion: {
+      type: String,
+      trim: true,
+      default: null,
+    },
     email: {
       type: String,
       required: true,
@@ -71,24 +129,19 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.pre("validate", function validateNationalId(next) {
+UserSchema.pre("validate", function validateNationalId() {
   if (this.role === "teacher" && !this.nationalId) {
     this.invalidate("nationalId", "Teachers must provide a national ID");
   }
 });
 
-UserSchema.pre("save", async function hashPassword(next) {
+UserSchema.pre("save", async function hashPassword() {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
-  try {
-    const salt = await bcrypt.genSalt(env.bcryptSaltRounds);
-    this.password = await bcrypt.hash(this.password, salt);
-    return next();
-  } catch (error) {
-    // console.log(error)
-  }
+  const salt = await bcrypt.genSalt(env.bcryptSaltRounds);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 UserSchema.methods.comparePassword = async function comparePassword(candidate) {

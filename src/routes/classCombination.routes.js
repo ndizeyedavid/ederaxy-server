@@ -25,7 +25,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listClassCombinationsQuerySchema, "query"),
+  // validateRequest(listClassCombinationsQuerySchema, "query"),
   list
 );
 
@@ -41,7 +41,7 @@ router.get(
   "/:combinationId",
   optionalAuthenticate,
   validateRequest(classCombinationIdParamSchema, "params"),
-  validateRequest(classCombinationDetailQuerySchema, "query"),
+  // validateRequest(classCombinationDetailQuerySchema, "query"),
   detail
 );
 

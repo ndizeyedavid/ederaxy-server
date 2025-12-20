@@ -18,6 +18,9 @@ export const getHlsDir = () => path.join(resolveStorageBase(), "hls");
 export const getThumbnailsDir = () =>
   path.join(resolveStorageBase(), "thumbnails");
 
+export const getProfilePicturesDir = () =>
+  path.join(resolveStorageBase(), "profile-pictures");
+
 export const ensureDir = async (dirPath) => {
   await fs.mkdir(dirPath, { recursive: true });
 };
@@ -27,6 +30,7 @@ export const ensureBaseStorage = async () => {
     ensureDir(getUploadsDir()),
     ensureDir(getHlsDir()),
     ensureDir(getThumbnailsDir()),
+    ensureDir(getProfilePicturesDir()),
   ]);
 };
 
@@ -48,6 +52,12 @@ export const ensureThumbnailsFolder = async (folderName) => {
   return thumbnailsFolder;
 };
 
+export const ensureProfilePicturesFolder = async (folderName) => {
+  const profilePicturesFolder = path.join(getProfilePicturesDir(), folderName);
+  await ensureDir(profilePicturesFolder);
+  return profilePicturesFolder;
+};
+
 const toPosix = (relativePath) => relativePath.replace(/\\/g, "/");
 
 export const getRelativeUploadPath = (folderName, fileName) =>
@@ -59,6 +69,9 @@ export const getRelativeHlsPath = (folderName, fileName = "") =>
 export const getRelativeThumbnailPath = (folderName, fileName) =>
   toPosix(path.join("thumbnails", folderName, fileName));
 
+export const getRelativeProfilePicturePath = (folderName, fileName) =>
+  toPosix(path.join("profile-pictures", folderName, fileName));
+
 export const toAbsolutePath = (relativePath) =>
   path.join(resolveStorageBase(), relativePath);
 
@@ -68,11 +81,14 @@ export default {
   ensureUploadFolder,
   ensureHlsFolder,
   ensureThumbnailsFolder,
+  ensureProfilePicturesFolder,
   getUploadsDir,
   getHlsDir,
   getThumbnailsDir,
+  getProfilePicturesDir,
   getRelativeUploadPath,
   getRelativeHlsPath,
   getRelativeThumbnailPath,
+  getRelativeProfilePicturePath,
   toAbsolutePath,
 };
