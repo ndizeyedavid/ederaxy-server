@@ -8,6 +8,7 @@ import {
 } from "../services/course.service.js";
 
 export const create = asyncHandler(async (req, res) => {
+  console.log(req.body);
   const payload = pick(req.body, [
     "title",
     "description",

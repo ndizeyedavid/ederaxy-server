@@ -129,24 +129,19 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.pre("validate", function validateNationalId(next) {
+UserSchema.pre("validate", function validateNationalId() {
   if (this.role === "teacher" && !this.nationalId) {
     this.invalidate("nationalId", "Teachers must provide a national ID");
   }
 });
 
-UserSchema.pre("save", async function hashPassword(next) {
+UserSchema.pre("save", async function hashPassword() {
   if (!this.isModified("password")) {
-    return next();
+    return;
   }
 
-  try {
-    const salt = await bcrypt.genSalt(env.bcryptSaltRounds);
-    this.password = await bcrypt.hash(this.password, salt);
-    return next();
-  } catch (error) {
-    // console.log(error)
-  }
+  const salt = await bcrypt.genSalt(env.bcryptSaltRounds);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 UserSchema.methods.comparePassword = async function comparePassword(candidate) {

@@ -25,7 +25,7 @@ const router = Router();
 router.get(
   "/",
   optionalAuthenticate,
-  validateRequest(listAcademicClassesQuerySchema, "query"),
+  // validateRequest(listAcademicClassesQuerySchema, "query"),
   list
 );
 
@@ -41,7 +41,7 @@ router.get(
   "/:classId",
   optionalAuthenticate,
   validateRequest(academicClassIdParamSchema, "params"),
-  validateRequest(academicClassDetailQuerySchema, "query"),
+  // validateRequest(academicClassDetailQuerySchema, "query"),
   detail
 );
 
